@@ -162,8 +162,11 @@ export const useStore = create<AnimationState>((set) => ({
     if (!state.currentModel) return state;
     
     const updatedAnimations = state.currentModel.animations.map(animation => {
-      if (animation.action && animation.isPlaying) {
+      // Always stop the animation action, regardless of its current playing state
+      if (animation.action) {
         animation.action.stop();
+        // Reset the time to the beginning
+        animation.action.reset();
       }
       
       return {
@@ -191,10 +194,21 @@ export const useStore = create<AnimationState>((set) => ({
     }
   })),
   
-  resetMorphTargets: () => set((state) => ({
-    modelConfig: {
-      ...state.modelConfig,
-      morphTargetInfluences: {}
+  resetMorphTargets: () => set((state) => {
+    // Create a new object with all existing morph targets set to 0
+    const resetInfluences: Record<string, number> = {};
+    
+    if (state.currentModel?.morphTargets) {
+      state.currentModel.morphTargets.forEach(targetName => {
+        resetInfluences[targetName] = 0;
+      });
     }
-  }))
+    
+    return {
+      modelConfig: {
+        ...state.modelConfig,
+        morphTargetInfluences: resetInfluences
+      }
+    };
+  })
 }));
