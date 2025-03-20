@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { 
   OrbitControls, 
   Grid, 
@@ -14,9 +14,10 @@ import * as THREE from 'three';
  * Model component that renders the loaded glTF model
  */
 const Model: React.FC = () => {
-  const { currentModel, modelConfig, updateAnimationAction } = useStore();
+  const { currentModel, modelConfig, updateAnimationAction, setCurrentModel } = useStore();
   const group = useRef<THREE.Group>(null);
   const { object } = currentModel || { object: null };
+  const [detectedMorphTargets, setDetectedMorphTargets] = useState<string[]>([]);
   
   // For debugging - log what animations are available on the object
   useEffect(() => {
@@ -27,8 +28,40 @@ const Model: React.FC = () => {
         animations: currentModel.object.animations,
         animationsCount: currentModel.object.animations ? currentModel.object.animations.length : 0
       });
+      
+      // Detect morph targets
+      const morphTargets: string[] = [];
+      currentModel.object.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          // Safely check for morphTargetDictionary
+          const morphDict = child.morphTargetDictionary;
+          if (morphDict) {
+            console.log('Found mesh with morph targets:', child.name, morphDict);
+            Object.keys(morphDict).forEach(key => {
+              if (!morphTargets.includes(key)) {
+                morphTargets.push(key);
+              }
+            });
+          }
+        }
+      });
+      
+      if (morphTargets.length > 0) {
+        console.log('Found morph targets:', morphTargets);
+        setDetectedMorphTargets(morphTargets);
+      }
     }
-  }, [currentModel]);
+  }, [currentModel?.object]); // Only depend on the object, not the entire currentModel
+  
+  // Update the model with detected morph targets
+  useEffect(() => {
+    if (detectedMorphTargets.length > 0 && currentModel && !currentModel.morphTargets) {
+      setCurrentModel({
+        ...currentModel,
+        morphTargets: detectedMorphTargets
+      });
+    }
+  }, [detectedMorphTargets, currentModel, setCurrentModel]);
   
   // Extract animation clips from the current model for the useAnimations hook
   // The hook expects actual THREE.AnimationClip objects, not our animation info objects
@@ -62,23 +95,44 @@ const Model: React.FC = () => {
       });
     }
   }, [actions, names, updateAnimationAction]);
-
-  // Update transforms based on model config
-  useEffect(() => {
-    if (group.current) {
-      group.current.position.set(...modelConfig.position);
-      group.current.rotation.set(...modelConfig.rotation);
-      group.current.scale.set(...modelConfig.scale);
-    }
-  }, [modelConfig]);
-
-  if (!object) return null;
   
+  // Apply morph target influences from the store
+  useFrame(() => {
+    if (currentModel?.object && modelConfig.morphTargetInfluences) {
+      currentModel.object.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          // Safely check for morphTargetDictionary and morphTargetInfluences
+          const morphDict = child.morphTargetDictionary;
+          const morphInfluences = child.morphTargetInfluences;
+          
+          if (morphDict && morphInfluences) {
+            Object.entries(modelConfig.morphTargetInfluences || {}).forEach(([name, value]) => {
+              const index = morphDict[name];
+              if (index !== undefined) {
+                morphInfluences[index] = value;
+              }
+            });
+          }
+        }
+      });
+    }
+  });
+
+  // Apply model transformations
   return (
     <group ref={group}>
-      <primitive 
-        object={object} 
-      />
+      {object && (
+        <primitive 
+          object={object} 
+          position={modelConfig.position}
+          rotation={[
+            modelConfig.rotation[0] * Math.PI / 180,
+            modelConfig.rotation[1] * Math.PI / 180,
+            modelConfig.rotation[2] * Math.PI / 180
+          ]}
+          scale={modelConfig.scale}
+        />
+      )}
     </group>
   );
 };
@@ -89,12 +143,12 @@ const Model: React.FC = () => {
 const Environment3D: React.FC = () => {
   const { sceneSettings } = useStore();
   const { scene } = useThree();
-
+  
   // Update background color when scene settings change
   useEffect(() => {
     scene.background = new THREE.Color(sceneSettings.background);
   }, [scene, sceneSettings.background]);
-
+  
   return (
     <>
       <ambientLight intensity={0.5} />
@@ -102,11 +156,16 @@ const Environment3D: React.FC = () => {
         position={[10, 10, 5]} 
         intensity={1} 
         castShadow 
+        shadow-mapSize-width={2048} 
+        shadow-mapSize-height={2048} 
       />
-      <directionalLight 
-        position={[-10, 10, 5]} 
-        intensity={0.5} 
-      />
+      <directionalLight position={[-10, -10, -5]} intensity={0.5} />
+      
+      {sceneSettings.showGrid && <Grid infiniteGrid fadeDistance={50} fadeStrength={5} />}
+      {sceneSettings.showAxes && (
+        <axesHelper args={[5]} />
+      )}
+      
       <Environment preset="city" />
     </>
   );
@@ -116,48 +175,23 @@ const Environment3D: React.FC = () => {
  * Main 3D Scene component
  */
 const Scene: React.FC = () => {
-  const { sceneSettings, currentModel } = useStore();
-
+  const { currentModel } = useStore();
+  
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <Canvas
-        camera={{ position: [0, 2, 5], fov: 50 }}
-        shadows
-      >
+    <div style={{ width: '100%', height: '100%' }}>
+      <Canvas shadows camera={{ position: [0, 2, 5], fov: 50 }}>
         <Environment3D />
         
-        {/* Helpers */}
-        {sceneSettings.showGrid && (
-          <Grid 
-            cellSize={1}
-            cellThickness={0.5}
-            cellColor="#606060"
-            sectionSize={3}
-            sectionThickness={1}
-            sectionColor="#808080"
-            fadeDistance={30}
-            infiniteGrid
-            position={[0, -0.01, 0]}
-          />
-        )}
+        <Center>
+          {currentModel && <Model />}
+        </Center>
         
-        {sceneSettings.showAxes && (
-          <primitive object={new THREE.AxesHelper(5)} />
-        )}
-        
-        {/* Model */}
-        {currentModel && (
-          <Center>
-            <Model />
-          </Center>
-        )}
-        
-        {/* Controls */}
         <OrbitControls 
-          makeDefault
-          enableDamping
-          dampingFactor={0.1}
-          rotateSpeed={0.5}
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          minDistance={1}
+          maxDistance={20}
         />
       </Canvas>
     </div>

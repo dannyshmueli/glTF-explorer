@@ -6,15 +6,12 @@ A powerful tool for exploring and testing animated glTF models for game developm
 
 ## Features
 
-- **Drag & Drop Loading**: Easily load glTF and GLB files with drag-and-drop functionality
-- **Example Model**: Try the included RobotExpressive model with 14 different animations
-- **Animation Controls**: View, play, and control all animations in your model
-- **Animation Speed Control**: Adjust playback speed from 0.0x to 2.0x
-- **Export Functionality**: Export THREE.AnimationAction data for use in your games
-- **Dark Theme UI**: Modern dark interface that complements 3D content
-- **Responsive Layout**: Works well on different screen sizes
-- **Transform Controls**: Adjust position, rotation, and scale of your models
-- **Scene Settings**: Customize the viewing environment with grid, axes, and background options
+- **Model Loading**: Drag and drop glTF (.gltf or .glb) files to load them into the viewer
+- **Animation Playback**: Play, pause, and adjust the speed of animations
+- **Facial Expressions**: Control morph targets/blend shapes for models that support them
+- **Model Transformation**: Adjust position, rotation, and scale of the model
+- **Scene Settings**: Toggle grid and axes visibility, change background color
+- **Dark Theme UI**: Sleek dark-themed interface for better visualization
 
 ## Use Cases
 

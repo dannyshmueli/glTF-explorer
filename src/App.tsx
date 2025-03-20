@@ -6,17 +6,20 @@ import AnimationControls from './components/ui/AnimationControls';
 import ModelConfig from './components/ui/ModelConfig';
 import SceneSettings from './components/ui/SceneSettings';
 import ModelInfo from './components/ui/ModelInfo';
+import ExpressionControls from './components/ui/ExpressionControls';
 import { useStore } from './store/useStore';
 
 function App() {
   const { currentModel, isLoading, error } = useStore();
-  const [sidebarTab, setSidebarTab] = useState<'animations' | 'settings' | 'model'>('animations');
+  const [sidebarTab, setSidebarTab] = useState<'animations' | 'expressions' | 'model' | 'settings'>('animations');
 
   // Helper function to render the active sidebar tab content
   const renderTabContent = () => {
     switch (sidebarTab) {
       case 'animations':
         return <AnimationControls />;
+      case 'expressions':
+        return <ExpressionControls />;
       case 'settings':
         return <SceneSettings />;
       case 'model':
@@ -117,7 +120,6 @@ function App() {
         {/* Sidebar */}
         {currentModel && (
           <div style={{
-            width: '300px',
             borderLeft: '1px solid #333',
             display: 'flex',
             flexDirection: 'column',
@@ -143,6 +145,20 @@ function App() {
                 }}
               >
                 Animations
+              </button>
+              <button
+                onClick={() => setSidebarTab('expressions')}
+                style={{
+                  flex: 1,
+                  padding: '10px',
+                  background: sidebarTab === 'expressions' ? '#3a3a3a' : 'transparent',
+                  border: 'none',
+                  borderBottom: sidebarTab === 'expressions' ? '2px solid #646cff' : 'none',
+                  cursor: 'pointer',
+                  color: '#fff',
+                }}
+              >
+                Expressions
               </button>
               <button
                 onClick={() => setSidebarTab('model')}
