@@ -7,11 +7,12 @@ import ModelConfig from './components/ui/ModelConfig';
 import SceneSettings from './components/ui/SceneSettings';
 import ModelInfo from './components/ui/ModelInfo';
 import ExpressionControls from './components/ui/ExpressionControls';
+import ExportControls from './components/ui/ExportControls';
 import { useStore } from './store/useStore';
 
 function App() {
   const { currentModel, isLoading, error } = useStore();
-  const [sidebarTab, setSidebarTab] = useState<'animations' | 'expressions' | 'model' | 'settings'>('animations');
+  const [sidebarTab, setSidebarTab] = useState<'animations' | 'expressions' | 'model' | 'settings' | 'export'>('animations');
 
   // Helper function to render the active sidebar tab content
   const renderTabContent = () => {
@@ -24,6 +25,8 @@ function App() {
         return <SceneSettings />;
       case 'model':
         return <ModelConfig />;
+      case 'export':
+        return <ExportControls />;
       default:
         return null;
     }
@@ -126,76 +129,267 @@ function App() {
             background: '#2a2a2a',
             color: '#eee',
             overflow: 'hidden',
-          }}>
-            {/* Sidebar Tabs */}
-            <div style={{
-              display: 'flex',
-              borderBottom: '1px solid #333',
-            }}>
-              <button
-                onClick={() => setSidebarTab('animations')}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: sidebarTab === 'animations' ? '#3a3a3a' : 'transparent',
-                  border: 'none',
-                  borderBottom: sidebarTab === 'animations' ? '2px solid #646cff' : 'none',
-                  cursor: 'pointer',
-                  color: '#fff',
-                }}
-              >
-                Animations
-              </button>
-              <button
-                onClick={() => setSidebarTab('expressions')}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: sidebarTab === 'expressions' ? '#3a3a3a' : 'transparent',
-                  border: 'none',
-                  borderBottom: sidebarTab === 'expressions' ? '2px solid #646cff' : 'none',
-                  cursor: 'pointer',
-                  color: '#fff',
-                }}
-              >
-                Expressions
-              </button>
-              <button
-                onClick={() => setSidebarTab('model')}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: sidebarTab === 'model' ? '#3a3a3a' : 'transparent',
-                  border: 'none',
-                  borderBottom: sidebarTab === 'model' ? '2px solid #646cff' : 'none',
-                  cursor: 'pointer',
-                  color: '#fff',
-                }}
-              >
-                Model
-              </button>
-              <button
-                onClick={() => setSidebarTab('settings')}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: sidebarTab === 'settings' ? '#3a3a3a' : 'transparent',
-                  border: 'none',
-                  borderBottom: sidebarTab === 'settings' ? '2px solid #646cff' : 'none',
-                  cursor: 'pointer',
-                  color: '#fff',
-                }}
-              >
-                Scene
-              </button>
+            width: '350px'
+          }} className="sidebar-container">
+            {/* Model Info - Always at the top */}
+            <div className="model-info">
+              <ModelInfo />
             </div>
             
-            {/* Model Info (always visible) */}
-            <ModelInfo />
-            
-            {/* Tab Content */}
-            <div style={{ flex: 1, overflow: 'auto' }}>
-              {renderTabContent()}
+            {/* Tabs Container */}
+            <div className="sidebar-tabs">
+              {/* Top section - Tabs above the active one */}
+              <div className="sidebar-top-section">
+                {/* Only show tabs that should appear above the current active tab */}
+                {sidebarTab === 'animations' && null}
+                
+                {sidebarTab === 'expressions' && (
+                  <button
+                    onClick={() => setSidebarTab('animations')}
+                    className="sidebar-tab"
+                  >
+                    <span className="sidebar-tab-icon">🎬</span>
+                    Animations
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                
+                {sidebarTab === 'model' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('animations')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🎬</span>
+                      Animations
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('expressions')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">😀</span>
+                      Expressions
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+                
+                {sidebarTab === 'settings' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('animations')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🎬</span>
+                      Animations
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('expressions')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">😀</span>
+                      Expressions
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('model')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">📐</span>
+                      Model
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+                
+                {sidebarTab === 'export' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('animations')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🎬</span>
+                      Animations
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('expressions')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">😀</span>
+                      Expressions
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('model')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">📐</span>
+                      Model
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('settings')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🌐</span>
+                      Scene
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+              </div>
+              
+              {/* Middle section - Active tab */}
+              <div className="sidebar-middle-section">
+                {/* Active Tab Header */}
+                {sidebarTab === 'animations' && (
+                  <button className="sidebar-tab active">
+                    <span className="sidebar-tab-icon">🎬</span>
+                    Animations
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                {sidebarTab === 'expressions' && (
+                  <button className="sidebar-tab active">
+                    <span className="sidebar-tab-icon">😀</span>
+                    Expressions
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                {sidebarTab === 'model' && (
+                  <button className="sidebar-tab active">
+                    <span className="sidebar-tab-icon">📐</span>
+                    Model
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                {sidebarTab === 'settings' && (
+                  <button className="sidebar-tab active">
+                    <span className="sidebar-tab-icon">🌐</span>
+                    Scene
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                {sidebarTab === 'export' && (
+                  <button className="sidebar-tab active">
+                    <span className="sidebar-tab-icon">⬇️</span>
+                    Export
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                
+                {/* Active Tab Content */}
+                <div className="sidebar-tab-content active">
+                  {renderTabContent()}
+                </div>
+              </div>
+              
+              {/* Bottom section - Tabs below the active one */}
+              <div className="sidebar-bottom-section">
+                {/* Only show tabs that should appear below the current active tab */}
+                {sidebarTab === 'animations' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('expressions')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">😀</span>
+                      Expressions
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('model')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">📐</span>
+                      Model
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('settings')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🌐</span>
+                      Scene
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('export')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">⬇️</span>
+                      Export
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+                
+                {sidebarTab === 'expressions' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('model')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">📐</span>
+                      Model
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('settings')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🌐</span>
+                      Scene
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('export')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">⬇️</span>
+                      Export
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+                
+                {sidebarTab === 'model' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('settings')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🌐</span>
+                      Scene
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('export')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">⬇️</span>
+                      Export
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+                
+                {sidebarTab === 'settings' && (
+                  <button
+                    onClick={() => setSidebarTab('export')}
+                    className="sidebar-tab"
+                  >
+                    <span className="sidebar-tab-icon">⬇️</span>
+                    Export
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                
+                {sidebarTab === 'export' && null}
+              </div>
             </div>
           </div>
         )}

@@ -38,3 +38,106 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Vertical sidebar tabs styling */
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-tabs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-tab {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background: #2a2a2a;
+  border: none;
+  border-bottom: 1px solid #444;
+  cursor: pointer;
+  color: #ccc;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: left;
+  gap: 10px;
+  position: relative;
+  z-index: 10;
+  width: 100%; /* Ensure the tab takes the full width */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.sidebar-tab:hover {
+  background: #333;
+  color: #fff;
+}
+
+.sidebar-tab.active {
+  background: #3a3a3a;
+  color: #fff;
+  border-left: 3px solid #646cff;
+  padding-left: 12px;
+}
+
+.sidebar-tab-icon {
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.sidebar-tab-expand-icon {
+  margin-left: auto;
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-tab.active .sidebar-tab-expand-icon {
+  transform: rotate(180deg);
+}
+
+.sidebar-tab-content {
+  flex: 1;
+  overflow-y: auto;
+  background: #222;
+  display: none;
+}
+
+.sidebar-tab-content.active {
+  display: block;
+}
+
+.sidebar-top-section {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #2a2a2a;
+}
+
+.sidebar-middle-section {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-bottom-section {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: #2a2a2a;
+}
+
+.model-info {
+  padding: 10px 15px;
+  border-bottom: 1px solid #444;
+  background: #2a2a2a;
+}
