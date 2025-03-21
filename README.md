@@ -89,5 +89,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Three.js for the example models
-- The React Three Fiber community for their excellent documentation
+- [Three.js](https://threejs.org) for the example models
+- The "Robot Expressive" model by [Tomás Laulhé](https://www.patreon.com/quaternius) 
+- [React Three Fiber](https://github.com/pmndrs/react-three-fiber)for their excellent documentation
