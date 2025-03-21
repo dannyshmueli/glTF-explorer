@@ -39,7 +39,7 @@ const FileUploader: React.FC = () => {
       setCurrentModel(modelInfo);
     } catch (error) {
       console.error('Error loading example model:', error);
-      setError(`Failed to load example model: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setError(`Failed to wmple model: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }

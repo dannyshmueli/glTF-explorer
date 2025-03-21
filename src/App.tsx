@@ -8,11 +8,12 @@ import SceneSettings from './components/ui/SceneSettings';
 import ModelInfo from './components/ui/ModelInfo';
 import ExpressionControls from './components/ui/ExpressionControls';
 import ExportControls from './components/ui/ExportControls';
+import InfoControls from './components/ui/InfoControls';
 import { useStore } from './store/useStore';
 
 function App() {
   const { currentModel, isLoading, error } = useStore();
-  const [sidebarTab, setSidebarTab] = useState<'animations' | 'expressions' | 'model' | 'settings' | 'export'>('animations');
+  const [sidebarTab, setSidebarTab] = useState<'animations' | 'expressions' | 'model' | 'settings' | 'export' | 'info'>('animations');
 
   // Helper function to render the active sidebar tab content
   const renderTabContent = () => {
@@ -27,6 +28,8 @@ function App() {
         return <ModelConfig />;
       case 'export':
         return <ExportControls />;
+      case 'info':
+        return <InfoControls />;
       default:
         return null;
     }
@@ -240,6 +243,51 @@ function App() {
                     </button>
                   </>
                 )}
+                
+                {sidebarTab === 'info' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('animations')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🎬</span>
+                      Animations
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('expressions')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">😀</span>
+                      Expressions
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('model')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">📐</span>
+                      Model
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('settings')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">🌐</span>
+                      Scene
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('export')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">⬇️</span>
+                      Export
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
               </div>
               
               {/* Middle section - Active tab */}
@@ -277,6 +325,13 @@ function App() {
                   <button className="sidebar-tab active">
                     <span className="sidebar-tab-icon">⬇️</span>
                     Export
+                    <span className="sidebar-tab-expand-icon">▼</span>
+                  </button>
+                )}
+                {sidebarTab === 'info' && (
+                  <button className="sidebar-tab active">
+                    <span className="sidebar-tab-icon">ℹ️</span>
+                    Info
                     <span className="sidebar-tab-expand-icon">▼</span>
                   </button>
                 )}
@@ -324,6 +379,14 @@ function App() {
                       Export
                       <span className="sidebar-tab-expand-icon">▼</span>
                     </button>
+                    <button
+                      onClick={() => setSidebarTab('info')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">ℹ️</span>
+                      Info
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
                   </>
                 )}
                 
@@ -353,6 +416,14 @@ function App() {
                       Export
                       <span className="sidebar-tab-expand-icon">▼</span>
                     </button>
+                    <button
+                      onClick={() => setSidebarTab('info')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">ℹ️</span>
+                      Info
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
                   </>
                 )}
                 
@@ -374,21 +445,52 @@ function App() {
                       Export
                       <span className="sidebar-tab-expand-icon">▼</span>
                     </button>
+                    <button
+                      onClick={() => setSidebarTab('info')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">ℹ️</span>
+                      Info
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
                   </>
                 )}
                 
                 {sidebarTab === 'settings' && (
+                  <>
+                    <button
+                      onClick={() => setSidebarTab('export')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">⬇️</span>
+                      Export
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                    <button
+                      onClick={() => setSidebarTab('info')}
+                      className="sidebar-tab"
+                    >
+                      <span className="sidebar-tab-icon">ℹ️</span>
+                      Info
+                      <span className="sidebar-tab-expand-icon">▼</span>
+                    </button>
+                  </>
+                )}
+                
+                {sidebarTab === 'export' && (
                   <button
-                    onClick={() => setSidebarTab('export')}
+                    onClick={() => setSidebarTab('info')}
                     className="sidebar-tab"
                   >
-                    <span className="sidebar-tab-icon">⬇️</span>
-                    Export
+                    <span className="sidebar-tab-icon">ℹ️</span>
+                    Info
                     <span className="sidebar-tab-expand-icon">▼</span>
                   </button>
                 )}
                 
-                {sidebarTab === 'export' && null}
+                {sidebarTab === 'info' && (
+                  null
+                )}
               </div>
             </div>
           </div>
