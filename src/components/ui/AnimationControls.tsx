@@ -48,26 +48,49 @@ const AnimationControls: React.FC = () => {
   }
 
   return (
-    <div className="animation-controls" style={{ padding: '10px', background: '#2a2a2a', color: '#fff' }}>
-      <h3 style={{ marginTop: 0, color: '#fff' }}>Animation Controls</h3>
-      
-      <div style={{ marginBottom: '15px' }}>
-        <button 
-          onClick={resetAllAnimations}
-          style={{
-            padding: '8px 12px',
-            background: '#4a4a4a',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Reset All Animations
-        </button>
+    <div className="animation-controls" style={{ 
+      padding: '0', 
+      background: '#2a2a2a', 
+      color: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    }}>
+      {/* Fixed header section */}
+      <div style={{ 
+        padding: '10px',
+        marginBottom: '15px',
+        borderBottom: '1px solid #444',
+        background: '#2a2a2a',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10
+      }}>
+        <h3 style={{ marginTop: 0, color: '#fff' }}>Animation Controls</h3>
+        
+        <div style={{ marginBottom: '15px' }}>
+          <button 
+            onClick={resetAllAnimations}
+            style={{
+              padding: '8px 12px',
+              background: '#4a4a4a',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Reset All Animations
+          </button>
+        </div>
       </div>
       
-      <div className="animations-list">
+      {/* Scrollable animation list */}
+      <div style={{ 
+        overflowY: 'auto',
+        padding: '10px',
+        flex: 1
+      }}>
         {currentModel.animations.map((animation) => (
           <div 
             key={animation.name}
