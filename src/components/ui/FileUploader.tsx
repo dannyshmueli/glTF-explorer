@@ -184,6 +184,36 @@ const FileUploader: React.FC = () => {
         >
           Load Example Robot
         </button>
+        
+        <div style={{ 
+          fontSize: '0.8em', 
+          marginTop: '15px', 
+          color: '#aaa',
+          padding: '10px',
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: '4px'
+        }}>
+          <p style={{ margin: '0 0 5px 0' }}>
+            Example robot model by{' '}
+            <a 
+              href="https://www.patreon.com/quaternius" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#646cff' }}
+            >
+              Tomás Laulhé
+            </a>,
+            modifications by{' '}
+            <a 
+              href="https://donmccurdy.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#646cff' }}
+            >
+              Don McCurdy
+            </a>. CC0.
+          </p>
+        </div>
       </div>
     </div>
   );
