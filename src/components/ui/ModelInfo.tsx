@@ -3,7 +3,7 @@ import { useStore } from '../../store/useStore';
 import { Object3D } from 'three';
 
 const ModelInfo: React.FC = () => {
-  const { currentModel } = useStore();
+  const { currentModel, setCurrentModel, resetAllAnimations, resetMorphTargets } = useStore();
 
   if (!currentModel) {
     return null;
@@ -23,12 +23,39 @@ const ModelInfo: React.FC = () => {
     return count;
   };
 
+  const handleRemoveModel = () => {
+    // Reset animations and morph targets first
+    resetAllAnimations();
+    resetMorphTargets();
+    // Set current model to null to return to initial state
+    setCurrentModel(null);
+  };
+
   const meshCount = countMeshes(currentModel.object);
   const animationCount = currentModel.animations.length;
 
   return (
     <div className="model-info" style={{ padding: '10px' }}>
-      <h3 style={{ marginTop: 0 }}>Model Information</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+        <h3 style={{ marginTop: 0, marginBottom: 0 }}>Model Information</h3>
+        <button 
+          onClick={handleRemoveModel}
+          style={{
+            background: '#e74c3c',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            padding: '6px 12px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            fontSize: '14px'
+          }}
+        >
+          Remove Model
+        </button>
+      </div>
       
       <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px' }}>
         <span style={{ fontWeight: 'bold' }}>Name:</span>
