@@ -2,7 +2,7 @@
 
 A powerful tool for exploring and testing animated glTF models for game development. Built with React, TypeScript, and React Three Fiber.
 
-![glTF Animation Explorer](https://github.com/mrdoob/three.js/raw/dev/examples/screenshots/webgl_animation_skinning_morph.jpg)
+![glTF Animation Explorer Screenshot](./public/screenshots/gltf-explorer-screenshot.png)
 
 ## Features
 
