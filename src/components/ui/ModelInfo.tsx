@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../../store/useStore';
-import { Object3D } from 'three';
+import { Object3D, Box3, Vector3 } from 'three';
 
 const ModelInfo: React.FC = () => {
   const { currentModel, setCurrentModel, resetAllAnimations, resetMorphTargets } = useStore();
@@ -23,6 +23,21 @@ const ModelInfo: React.FC = () => {
     return count;
   };
 
+  // Calculate model dimensions
+  const getModelSize = (object: Object3D | undefined): { width: number; height: number; depth: number } => {
+    if (!object) return { width: 0, height: 0, depth: 0 };
+
+    const boundingBox = new Box3().setFromObject(object);
+    const size = new Vector3();
+    boundingBox.getSize(size);
+
+    return {
+      width: parseFloat(size.x.toFixed(2)),
+      height: parseFloat(size.y.toFixed(2)),
+      depth: parseFloat(size.z.toFixed(2))
+    };
+  };
+
   const handleRemoveModel = () => {
     // Reset animations and morph targets first
     resetAllAnimations();
@@ -33,6 +48,7 @@ const ModelInfo: React.FC = () => {
 
   const meshCount = countMeshes(currentModel.object);
   const animationCount = currentModel.animations.length;
+  const modelSize = getModelSize(currentModel.object);
 
   return (
     <div className="model-info" style={{ padding: '10px' }}>
@@ -63,6 +79,9 @@ const ModelInfo: React.FC = () => {
         
         <span style={{ fontWeight: 'bold' }}>Meshes:</span>
         <span>{meshCount}</span>
+        
+        <span style={{ fontWeight: 'bold' }}>Size:</span>
+        <span>W: {modelSize.width}m × H: {modelSize.height}m × D: {modelSize.depth}m</span>
         
         <span style={{ fontWeight: 'bold' }}>Animations:</span>
         <span>{animationCount}</span>
